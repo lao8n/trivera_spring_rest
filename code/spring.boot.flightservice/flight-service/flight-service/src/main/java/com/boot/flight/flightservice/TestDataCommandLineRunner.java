@@ -16,6 +16,6 @@ public class TestDataCommandLineRunner implements CommandLineRunner {
         flightRepository.save(new Flight("DL80", "Boston"));
         flightRepository.save(new Flight("KL603", "Amsterdam"));
         flightRepository.save(new Flight("UA807", "Las Vegas"));
-        flightRepository.save(new Flight("DL800", "Atlanata"));
+        flightRepository.save(new Flight("DL800", "Atlanta"));
     }
 }

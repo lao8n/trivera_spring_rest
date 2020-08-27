@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.triveratravel.model.PaymentStatus;
+import com.triveratravel.repository.UpdateReservationQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,9 @@ public class HotelServiceImpl implements HotelService {
 	@Autowired
 	private ReservationRepository reservationRepository;
 
+	@Autowired
+	private UpdateReservationQuery updateQuery;
+
 	public Reservation makeReservation(String nameOnReservation, String creditCardNumber, LocalDate arrivalDate,
 			int numberOfNights) throws PaymentException, InvalidCardException {
 
@@ -55,9 +60,10 @@ public class HotelServiceImpl implements HotelService {
 		BigDecimal totalPrice = pricePerNight.multiply(new BigDecimal(numberOfNights));
 		try {
 			creditcardService.makePayment(nameOnReservation, creditCardNumber, totalPrice);
+			updateQuery.execute(reservation.getId(), PaymentStatus.PAID);
 
 		} catch (PaymentException e) {
-
+			updateQuery.execute(reservation.getId(), PaymentStatus.AWAITING_AUTHORIZATION);
 			throw e;
 		}
 
